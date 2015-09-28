@@ -29,7 +29,7 @@ int CercaRepertoConStampa(struct s_paziente* p, char nome[]){
 	scanf("%s", nomecercato);
 
 	ok=trovato(p->PAPR, nomecercato);					//se il reperto cercato effettivamente esiste allora il NomeDelFile viene copiato nella stringa fornita dal chiamante;
-	if(ok) {strcp(nome ,nomecercato); return 1;
+	if(ok) {strcpy(nome ,nomecercato); return 1;
 	}	else return 0;
 }
 
@@ -70,7 +70,7 @@ int trovato (struct s_reperto* scorriR, char nomecercato[]) {
 void IA(struct s_paziente **a ){
  
     printf("inserisci in questo formato nome[spazio]cognome[spazio]codicefiscale:\n\n");
-    scanf("%s %s %s", (*a)->anagrafica.nome, (*a)->anagrafica.cognome,  (*a)->anagrafica.codice_fiscale);
+    scanf("%s %s %s", (*a)->anagrafica.nome, (*a)->anagrafica.cognome, (*a)->anagrafica.codice_fiscale);
  
     printf("inserisci ID medico:");
     scanf("%d", &(*a)->anagrafica.ID_medico_di_base);
@@ -185,15 +185,18 @@ void esporta(struct s_paziente* t) {
 
 	fp=fopen("memoria.txt", "w+");
 	if(fp!=NULL){
-		printf("il file è stato aperto correttamente. Attendere.");
-		printf(".");
-		printf(".");
+		printf("il file è stato aperto correttamente (ESPORTA). Attendere...\n");
 
-		while(scorriP==NULL){
+		while(!(scorriP==NULL)){
+ 		
+ 		/*printf("***inizio printf***");
+		printf("%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
+		printf("***fine printf***"); IGNORE. USED FOR DEBUG PURPOSES. */
+		
 			fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
 			scorriP=scorriP->next;
 
-			while(scorriR==NULL){
+			while(!(scorriR==NULL)){
 				fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo);
 
 				scorriR=scorriR->next;}
@@ -219,7 +222,7 @@ void scriviP(struct s_paziente** dato, FILE* fp, struct s_paziente* t){
 void scriviR(struct s_reperto** dato, FILE* fp, struct s_reperto* t){
 	*dato=(struct s_reperto*)malloc(sizeof(struct s_reperto));
 
-	fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n", (*dato)->NomeDelFile, ((*dato)->data.giorno), ((*dato)->data.mese), ((*dato)->data.anno), ((*dato)->data.ora), ((*dato)->data.minuto), ((*dato)->data.secondo));
+	fscanf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n", (*dato)->NomeDelFile, &((*dato)->data.giorno), &((*dato)->data.mese), &((*dato)->data.anno), &((*dato)->data.ora), &((*dato)->data.minuto), &((*dato)->data.secondo));
 
 	(*dato)->next=t;
 	t=*dato;}
@@ -232,7 +235,7 @@ void importa(struct s_paziente* t){
 
 	fp=fopen("memoria.txt", "r");
 		if(fp!=NULL) {
-	printf("Il file è stato aperto correttamente\n");
+	printf("Il file è stato aperto correttamente(IMPORTA)\n");
 
 	while(!feof(fp)){
 		scriviP(&scorriP, fp, t);
@@ -245,5 +248,6 @@ void importa(struct s_paziente* t){
 	}else{
 		printf ("apertura fallita");
 		fclose(fp);}
+	fclose(fp);
 }
 
