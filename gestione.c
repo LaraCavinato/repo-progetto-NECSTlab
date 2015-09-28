@@ -175,7 +175,7 @@ void AR(struct s_paziente * t /*puntatore al primo paziente*/) {
 }
 
 // FILE //-----------------------------------------------------------------------------------------------------
-void salvafile (struct s_paziente* t) {
+void esporta(struct s_paziente* t) {
 
 	FILE* fp;
 	struct s_reperto*  scorriR;
@@ -224,7 +224,7 @@ void scriviR(struct s_reperto** dato, FILE* fp, struct s_reperto* t){
 	(*dato)->next=t;
 	t=*dato;}
 
-void leggo(struct s_paziente* t){
+void importa(struct s_paziente* t){
     
 	FILE* fp;
 	struct s_paziente* scorriP;
