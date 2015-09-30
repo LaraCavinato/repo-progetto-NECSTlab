@@ -1,3 +1,5 @@
+#include"gestione.h"
+
 ﻿int 10livelli(char NomeFile[]){
 
 	BMP_Image img, risultato;
@@ -178,22 +180,24 @@ int SchermataConfronto(struct s_paziente* t){
 	scanf("%d", &choice);
 
 	switch (choice) {
-		case 1; 
+		case 1: 
 	printf("\nScrivere il nome del reperto da confrontare");
 	scanf("%s",Nome);
 	Confronta((*r1)->NomeDelFile ,Nome); 
 		break;
-		case 2;    
+		case 2:    
 	b=CercaRepertoConStampa(p,&r2);  
 	Confronta((*r1)->NomeDelFile, (*r2)->NomeDelFile);     
 		break;
-		case 3;
+		case 3:
 	c=CercaStessoLivello(t, r1,Nome);    
 	Confronta ((*r1)->NomeDelFile, Nome);
 		break;
-		case 4;
+		case 4:
 	d=CercaSuccessivo(t,r1,Nome);
 	Confronta((*r1)->NomeDelFile, Nome);
+		break;
+		default: printf("non riconosciuto");
 		break;
 	}
 }

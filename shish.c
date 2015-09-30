@@ -1,4 +1,4 @@
-#include "gestione.h"
+#include "elaborazione.h"
 
 void main () {
 	short int OK;
@@ -22,7 +22,7 @@ void main () {
 	  	break;
 	  case 3:  match(TESTA);	
 	  	break;
-	  default: printf("OH COME ON!");
+	  default: SchermataElaborazione(t);
 		break;
 		}
 		printf("si desidera continuare? [Y/n]\n");
