@@ -8,8 +8,6 @@
 
 #include "tipiestrutture.h"
 
-int CercaRepertoConStampa(struct s_paziente*, char []);
-
 void match(struct s_paziente*);
 
 int trovato (struct s_reperto*, char []);
@@ -22,6 +20,7 @@ void CP(struct s_paziente* , struct s_paziente**);
 void caratteristiche_reperto (struct s_reperto*);
 void crea_reperto (struct s_reperto**); 
 void AR(struct s_paziente*);
+int CercaRepertoConStampa(struct s_paziente*, struct s_reperto**);
 
 void importa(struct s_paziente*);
 void esporta(struct s_paziente*);

@@ -8,31 +8,6 @@
 
 #include "tipiestrutture.h"
 
-//elenca tutti i reperti del paziente puntato da puntatore fornito. poi chiede un nomereperto e lo cerca. se lo trova lo scrive nella stringa ricevuta e torna 1, altrimenti 0;
-
-int CercaRepertoConStampa(struct s_paziente* p, char nome[]){
-
-	short int ok;
-	struct s_reperto* scorriR;
-	char nomecercato[25];
-	
-	if(p->PAPR==NULL) return 0;		//non ci sono reperti, torna subito zero.
-
-	scorriR=p->PAPR;
-
-	while(scorriR==NULL){			//stampa tutti i reperti del paziente
-		printf("%s\n", scorriR->NomeDelFile);
-		scorriR=scorriR->next;
-	}
-
-	printf("quale reperto si desidera analizzare?");
-	scanf("%s", nomecercato);
-
-	ok=trovato(p->PAPR, nomecercato);					//se il reperto cercato effettivamente esiste allora il NomeDelFile viene copiato nella stringa fornita dal chiamante;
-	if(ok) {strcpy(nome ,nomecercato); return 1;
-	}	else return 0;
-}
-
 //associa il paziente all'immagine fornita
 void match(struct s_paziente* p0) {
  
@@ -95,8 +70,38 @@ void InserisciInTesta(struct s_paziente** t){
     *t = new;
 }
  
- 
-void CP /*cercapaziente*/  (struct s_paziente* t /*testa*/, struct s_paziente** p /*puntatore che punterà*/) {
+int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
+//elenca tutti i reperti del paziente puntato da puntatore fornito. poi chiede un nomereperto e lo cerca. se lo trova lo lo associa al puntatore passato e torna 1, altrimenti 0;
+    short int ok,;
+    struct s_reperto* scorriR;
+    char nomecercato[25];
+    
+    if(p->PAPR==NULL) {printf("non ci sono reperti in questo paziente"); return 0;}
+    scorriR=p->PAPR;
+    
+    while(scorriR==NULL){            //stampa tutti i reperti del paziente
+        printf("%s\n", scorriR->NomeDelFile);
+        scorriR=scorriR->next;
+     }
+    
+    printf("quale reperto si desidera analizzare?");
+    scanf("%s", nomecercato);
+    
+    ok=trovato(p->PAPR, nomecercato);                    
+    
+    if(ok) {
+        scorriR=p->PAPR;
+        while(strcmp(scorriR->NomeDelFile, nomecercato)){
+            scorriR=scorriR->next;
+        }
+        *r=scorriR
+        return 1;
+    }    
+    else {printf("reperto non trovato"); return 0;}
+} 
+
+//cercapaziente
+void CP (struct s_paziente* t /*testa*/, struct s_paziente** p /*puntatore che punterà*/) {
 //DATI DI TARGA
 //riceve il puntatore alla testa e l'indirizzo di un puntatore che se tutto va a buon fine alla chiusura
 //della funzione punterà al paziente richiesto. Il paziente viene richiesto all'interno della funzione.

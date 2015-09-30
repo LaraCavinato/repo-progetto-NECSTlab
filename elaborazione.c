@@ -55,7 +55,7 @@ int Area (char NomeFile[]){
 
 
 
-int ChiaroScuro(NomeFile[], int* areaC, int* areaS){
+int ChiaroScuro(NomeFile[], float* areaC, float* areaS){
 
 	BMP_image im;
 	int th, tl, a, i, j, s=15;
@@ -110,8 +110,8 @@ void Confronta(Nomefile1[],Nomefile2[]){
 
 	float area1C, area1S, area2C, area2S, scartoC, scartoS;
 
-	soglie(Nomefile1, &area1C, &area1S);
-	soglie(Nomefile2, &area2C, &area2S);
+	ChiaroScuro(Nomefile1, &area1C, &area1S);
+	ChiaroScuro(Nomefile2, &area2C, &area2S);
 
 	scartoC=area1C-area2C;
 	scartoS=area1S-area2S;
@@ -254,7 +254,7 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	return 0;
 }
 
-
+//-----------------
 
 int LivelliGrigio(char NomeFile[]){
 
@@ -308,5 +308,59 @@ void GreyDistribution (char NomeFile[], int* array, int NUMMAX, int count[]){
 	}
 
 	else printf (“Immagine non caricata correttamente”);
+}
+
+
+
+void SchermataElaborazione(struct s_paziente* t){
+
+	int OK,a,b;
+	float area1, area2;
+	struct s_reperto* reperto;                
+	struct s_paziente * pazientedaesaminare;
+
+	printf("***schermata elaborazione immagine***\n");
+	printf("Si scelga una tra le seguenti opzioni:\n");
+	printf("1. calcolare il numero di livelli di grigio\n");
+	printf("2. calcolare la distribuzione dei livelli di grigio\n");
+	printf("3. ridurre i livelli di grigio a 10 \n");
+	printf("4. definire il contorno della zona informativa\n");
+	printf("5. calcolare la dimensione dell'area informativa\n");
+	printf("6. calcolare la dimensione dell'area chiara e di quella scura\n");
+	printf("7. confrontare due immagini\n");
+	scanf(“%d”,&OK);
+
+	if(OK==7){
+		a=SchermataConfronto(t);
+	if(a);
+		return;
+	else {printf("schermta confronto chiusa senza successo"); return;}
+	}
+	
+	CP(t,&pazientedaesaminare);
+	b=CercaRepertoConStampa(pazientedaesaminare,&reperto);
+
+	switch(OK){
+		case 1:
+			b= LivelliGrigio(reperto->NomeDelFile);
+		break;
+		case 2:
+			GreyDistribution(reperto->NomeDelFile, int* array, int NUMMAX, int count[])  
+		case 3:
+			b=10livelli(reperto->NomeDelFile);
+		break;
+		case 4:
+			b=CreaContorno(reperto->NomeDelFile) ;
+		break;
+		case 5:
+			b= Area(reperto->NomeDelFile);
+		break;
+		case 6:
+			b=ChiaroScuro(reperto->NomeDelFile,&area1,&area2);
+		break;
+		default:
+			printf(“Si inserisca un numero valido\n”);
+		break;
+	}
 }
 
