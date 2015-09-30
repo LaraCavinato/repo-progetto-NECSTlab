@@ -1,13 +1,14 @@
 #include"gestione.h"
+#include"bmp.h"
 
-﻿int 10livelli(char NomeFile[]){
+int livelli(char NomeFile[]){
 
 	BMP_Image img, risultato;
 	Pixel livelli[10] = {0, 25, 50, 75, 100, 125, 150, 175, 200, 225};
 	short int ok;
 	int i, j, k, a;
-	a=loadBMP(NomeFile, &img)
-	if (a) {printf("impossibile aprire l’immagine (vedi sopra)") return 0;}
+	a=loadBMP(NomeFile, &img);
+	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
 	
 	memcpy(risultato.magic, img.magic, sizeof(unsigned char [2])); 
 	risultato.header=img.header;
@@ -27,19 +28,19 @@
 			}while(ok);
 		}
 	}
-	saveBMP(risultato,"./modificate/10livelli.bmp");
+	saveBMP(risultato,"./modificate/livelli.bmp");
 	return 1;
 }
 
 
 
 int Area (char NomeFile[]){
-	int count=0;
+	int a, b, i, j, count=0;
 	float area;
 	BMP_Image im;
 	a = CreaContorno(NomeFile);
-	b = loadBMP("./modificate/contorno.bmp", &im)
-	if (b) {printf("impossibile aprire l’immagine (vedi sopra)") return 0;}
+	b = loadBMP("./modificate/contorno.bmp", &im);
+	if (b) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
 	if(a==1){
 		for(i=0;i<DATA_DIM;i++)
 		for(j=0;j<DATA_DIM;j++)
@@ -57,14 +58,14 @@ int Area (char NomeFile[]){
 
 
 
-int ChiaroScuro(NomeFile[], float* areaC, float* areaS){
+int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 
-	BMP_image im;
+	BMP_Image im;
 	int th, tl, a, i, j, s=15;
 	int countl=0, counth=0;
 
-	a=loadBMP(nomefile,&im);
-	if (a) {printf("impossibile aprire l’immagine (vedi sopra)") return 0;}
+	a=loadBMP(NomeFile, &im);
+	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
 	
 	for(i=0; i<DATA_DIM;i++){
 		j=0;
@@ -108,7 +109,7 @@ int ChiaroScuro(NomeFile[], float* areaC, float* areaS){
 
 
 
-void Confronta(Nomefile1[],Nomefile2[]){
+void Confronta(char Nomefile1[], char Nomefile2[]){
 
 	float area1C, area1S, area2C, area2S, scartoC, scartoS;
 
@@ -126,18 +127,18 @@ void Confronta(Nomefile1[],Nomefile2[]){
 
 int CreaContorno (char NomeFile[]) {
     int matrix[DATA_DIM][DATA_DIM];
-    BMP_image im;
+    BMP_Image im;
     int a, i, j;    
     int soglia=15;
 
-    a=loadBMP(filename, &im);
-    if (a) {printf("impossibile aprire l’immagine (vedi sopra)") return 0;}
+    a=loadBMP(NomeFile, &im);
+    if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
     else{
-        memcpy(matrix, im.data, Pixel [DATA_DIM][DATA_DIM]);
+        memcpy(matrix, im.data, sizeof(Pixel [DATA_DIM][DATA_DIM]));
         
         // settiamo a -1 tutto quello che è all’esterno del contorno
         for(i=0;i<DATA_DIM;i++){
-		    j=0
+		    j=0;
 		    while(matrix[i][j]<soglia){    
 				matrix[i][j]=-1;
 		    	j++;}}
@@ -153,7 +154,7 @@ int CreaContorno (char NomeFile[]) {
                 if (matrix[i][j]!=-1) matrix[i][j]=255;
                 else matrix[i][j]=0;}}
 
-        memcpy(im.data, matrix, Pixel [DATA_DIM][DATA_DIM]);
+        memcpy(im.data, matrix, sizeof(Pixel[DATA_DIM][DATA_DIM]));
         saveBMP(im, "./modificate/contorno.bmp");
     	return 1;
 	}
@@ -164,18 +165,18 @@ int CreaContorno (char NomeFile[]) {
 int SchermataConfronto(struct s_paziente* t){
 	int choice,a,b,c,d;
 	char Nome[25];
-	s_paziente* p; 
-	s_reperto* r1, r2;
-
+	struct s_paziente* p; 
+	struct s_reperto* r1;
+	struct s_reperto* r2;
 	CP(t, &p);
 	a=CercaRepertoConStampa(p, &r1); 
 	
 	if (!a) return 0;
 
-	printf("Come si desidera procedere?\n")
-	printf("1. cercare un altro reperto inserendolo manualmente\n")
-	printf("2.cercare un altro reperto appartenente allo stesso paziente\n")
-	printf("3. cercare un altro reperto del medesimo livello di quello scelto inizialmente\n")
+	printf("Come si desidera procedere?\n");
+	printf("1. cercare un altro reperto inserendolo manualmente\n");
+	printf("2.cercare un altro reperto appartenente allo stesso paziente\n");
+	printf("3. cercare un altro reperto del medesimo livello di quello scelto inizialmente\n");
 	printf("4. cercare un reperto adiacente a quello già in esame dello stesso paziente");
 	scanf("%d", &choice);
 
@@ -183,19 +184,19 @@ int SchermataConfronto(struct s_paziente* t){
 		case 1: 
 	printf("\nScrivere il nome del reperto da confrontare");
 	scanf("%s",Nome);
-	Confronta((*r1)->NomeDelFile ,Nome); 
+	Confronta(r1->NomeDelFile, Nome); 
 		break;
 		case 2:    
-	b=CercaRepertoConStampa(p,&r2);  
-	Confronta((*r1)->NomeDelFile, (*r2)->NomeDelFile);     
+	b=CercaRepertoConStampa(p, &r2);  
+	Confronta(r1->NomeDelFile, r2->NomeDelFile);     
 		break;
 		case 3:
 	c=CercaStessoLivello(t, r1,Nome);    
-	Confronta ((*r1)->NomeDelFile, Nome);
+	Confronta (r1->NomeDelFile, Nome);
 		break;
 		case 4:
 	d=CercaSuccessivo(t,r1,Nome);
-	Confronta((*r1)->NomeDelFile, Nome);
+	Confronta(r1->NomeDelFile, Nome);
 		break;
 		default: printf("non riconosciuto");
 		break;
@@ -204,14 +205,14 @@ int SchermataConfronto(struct s_paziente* t){
 
 
 
-int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r, char Nome[]){
+int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	short int ok;
 	struct s_reperto* scorriR;
 	char nomecercato[25];
 	scorriR=p->PAPR;
 
 	while(scorriR==NULL){           
-		if( (r1->livello==(scorriR->livello)+1))   &&   (r1->piano==scorriR->piano)  ){
+		if( (r1->livello==(scorriR->livello)+1)   &&   (r1->piano==scorriR->piano)  ){
 			printf("%s\t%d\t%c", scorriR->NomeDelFile, scorriR->livello, scorriR->piano); 
 			printf("\n"); 
 			scorriR=scorriR->next;}
@@ -250,7 +251,7 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	scanf("%s", nomecercato);
 
 	scorriP=p;
-	while(!scorriP==NULL){
+	while(!(scorriP->next==NULL)){
 		if(trovato(scorriP->PAPR, nomecercato)){ 
 			strcpy(Nome, nomecercato); 
 			return 1;}
@@ -259,10 +260,10 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 }
 
 //-----------------
-
+/*
 int LivelliGrigio(char NomeFile[]){
 
-	BMP_image im;
+	BMP_Image im;
 	int a,i,j,k,ok;
 	int t=1;
 	int livelli[256] = {-1};
@@ -283,7 +284,7 @@ int LivelliGrigio(char NomeFile[]){
 		t++;}}}
 	
 	for(k=0;k<t;k++){
-		printf(“%d\n”,livelli[k]);}
+		printf("%d\n",livelli[k]);}
 
 	return t-1;                    
 
@@ -296,24 +297,24 @@ int LivelliGrigio(char NomeFile[]){
 
 void GreyDistribution (char NomeFile[], int* array, int NUMMAX, int count[]){
 
-	BMP_image im;
+	BMP_Image im;
 	int a,j,x,i;
 	a = loadBMP(NomeFile, &im);
 
 	if (a==0){
-	for(i=0; i<=NUMMAX, i++)
-	for (j=0; j<DATA_DIM, j++){
+	for(i=0; i<=NUMMAX; i++)
+	for (j=0; j<DATA_DIM; j++){
 	for(x=0; x<DATA_DIM; x++)
 	if(  array[i] == im.data[j][x].grey  )
 	count[i]++;
-	printf(“la sfumatura di grigio %d ricorre %d volte nell’immagine”, array[i], count[i]);
+	printf("la sfumatura di grigio %d ricorre %d volte nell’immagine", array[i], count[i]);
 	}
 
 	}
 
-	else printf (“Immagine non caricata correttamente”);
+	else printf ("Immagine non caricata correttamente");
 }
-
+*/
 
 
 void SchermataElaborazione(struct s_paziente* t){
@@ -332,13 +333,13 @@ void SchermataElaborazione(struct s_paziente* t){
 	printf("5. calcolare la dimensione dell'area informativa\n");
 	printf("6. calcolare la dimensione dell'area chiara e di quella scura\n");
 	printf("7. confrontare due immagini\n");
-	scanf(“%d”,&OK);
+	scanf("%d",&OK);
 
 	if(OK==7){
 		a=SchermataConfronto(t);
-	if(a);
+	if(a)
 		return;
-	else {printf("schermta confronto chiusa senza successo"); return;}
+	else {printf("schermata confronto chiusa senza successo"); return;}
 	}
 	
 	CP(t,&pazientedaesaminare);
@@ -346,12 +347,12 @@ void SchermataElaborazione(struct s_paziente* t){
 
 	switch(OK){
 		case 1:
-			b= LivelliGrigio(reperto->NomeDelFile);
+			/*b= LivelliGrigio(reperto->NomeDelFile);*/
 		break;
 		case 2:
-			GreyDistribution(reperto->NomeDelFile, int* array, int NUMMAX, int count[])  
+			/*GreyDistribution(reperto->NomeDelFile, array, NUMMAX, count[]);*/ 
 		case 3:
-			b=10livelli(reperto->NomeDelFile);
+			b=livelli(reperto->NomeDelFile);
 		break;
 		case 4:
 			b=CreaContorno(reperto->NomeDelFile) ;
@@ -363,7 +364,7 @@ void SchermataElaborazione(struct s_paziente* t){
 			b=ChiaroScuro(reperto->NomeDelFile,&area1,&area2);
 		break;
 		default:
-			printf(“Si inserisca un numero valido\n”);
+			printf("Si inserisca un numero valido\n");
 		break;
 	}
 }

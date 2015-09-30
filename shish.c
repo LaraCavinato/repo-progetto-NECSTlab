@@ -22,7 +22,7 @@ void main () {
 	  	break;
 	  case 3:  match(TESTA);	
 	  	break;
-	  default: SchermataElaborazione(t);
+	  default: SchermataElaborazione(TESTA);
 		break;
 		}
 		printf("si desidera continuare? [Y/n]\n");

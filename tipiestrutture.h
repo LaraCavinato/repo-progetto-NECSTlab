@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include"bmp.h"
+
 //TIPO DATA
 typedef struct{
 
@@ -23,9 +23,11 @@ typedef struct{
 //STRUCT REPERTO
 struct s_reperto{
 
-	char NomeDelFile[25];
-	t_data data;
-	struct s_reperto* next;};
+	char NomeDelFile[25];    
+    t_data data;
+    char piano;
+    int livello; 
+    struct s_reperto* next;};
  
 //STRUCT PAZIENTE
 struct s_paziente {

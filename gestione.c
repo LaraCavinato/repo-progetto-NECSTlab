@@ -72,7 +72,7 @@ void InserisciInTesta(struct s_paziente** t){
  
 int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
 //elenca tutti i reperti del paziente puntato da puntatore fornito. poi chiede un nomereperto e lo cerca. se lo trova lo lo associa al puntatore passato e torna 1, altrimenti 0;
-    short int ok,;
+    short int ok;
     struct s_reperto* scorriR;
     char nomecercato[25];
     
@@ -94,7 +94,7 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
         while(strcmp(scorriR->NomeDelFile, nomecercato)){
             scorriR=scorriR->next;
         }
-        *r=scorriR
+        *r=scorriR;
         return 1;
     }    
     else {printf("reperto non trovato"); return 0;}
