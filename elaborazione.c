@@ -9,16 +9,16 @@ int livelli(char NomeFile[]){
 	int i, j, k, a;
 	a=loadBMP(NomeFile, &img);
 	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
-	
-	memcpy(risultato.magic, img.magic, sizeof(unsigned char [2])); 
+
+	memcpy(risultato.magic, img.magic, sizeof(unsigned char [2]));
 	risultato.header=img.header;
 	risultato.info=img.info;
 	memcpy(risultato.color_table, img.color_table, sizeof(Pixel [DATA_DIM][DATA_DIM]));
-	
+
 	if(loadBMP(NomeFile, &risultato)){
 		printf("***caricamento immagine non riuscito***");
 		return;}
-		
+
 	for(i=0;i<256;i++){
 		for(j=0;j<256;j++){
 			ok=1;k=9;
@@ -51,9 +51,9 @@ int Area (char NomeFile[]){
 		printf("L’area è di %f mm^2", area);
 		return 1;
 	}
-	else 
+	else
 		{printf("CreaContorno non è andata a buon fine");
-		return 0;} 
+		return 0;}
 }
 
 
@@ -66,22 +66,22 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 
 	a=loadBMP(NomeFile, &im);
 	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
-	
+
 	for(i=0; i<DATA_DIM;i++){
 		j=0;
 		while (im.data[i][j].grey<s || j<256) {
-			im.data[i][j].grey=128;    
+			im.data[i][j].grey=128;
 			j++;}}
 	for(i=0; i<DATA_DIM;i++){
 		j=256;
 		while (im.data[i][j].grey<s || j>-1) {
-			im.data[i][j].grey=128;    
+			im.data[i][j].grey=128;
 			j--;}}
-	
+
 	printf("Inserisci il valore della soglia scura(minore di 128)\n");
 	scanf("%d", &tl);
 	printf("Inserisci il valore della soglia chiara(maggiore di 128)\n");
-	scanf("%d", &th); 
+	scanf("%d", &th);
 
 	for(i=0; i<DATA_DIM;i++)
 		for(j=0; j<DATA_DIM;j++){
@@ -94,12 +94,12 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 				counth++;
 				im.data[i][j].grey=255;}
 		}
-		
+
 	*areaC=counth*0.00625;
 	*areaS=countl*0.00625;
 
 	printf("L’area dell’immagine significativa molto chiara è di %d pixel", counth);
-	printf("L’area dell’immagine significativa molto chiara è di %f mm^2", *areaC); 
+	printf("L’area dell’immagine significativa molto chiara è di %f mm^2", *areaC);
 	printf("L’area dell’immagine significativa molto scura è di %d pixel", countl);
 	printf("L’area dell’immagine significativa molto scura è di %f mm^2", *areaS);
 
@@ -118,8 +118,8 @@ void Confronta(char Nomefile1[], char Nomefile2[]){
 
 	scartoC=area1C-area2C;
 	scartoS=area1S-area2S;
-	
-	printf("L’area chiara dall’ immagine %s all’immagine %s è cresciuta di: %f\n", Nomefile1, Nomefile2, scartoC);     
+
+	printf("L’area chiara dall’ immagine %s all’immagine %s è cresciuta di: %f\n", Nomefile1, Nomefile2, scartoC);
 	printf("L’area scura  dall’ immagine %s all’immagine %s è cresciuta di: %f\n", Nomefile1, Nomefile2, scartoS);
 }
 
@@ -128,18 +128,18 @@ void Confronta(char Nomefile1[], char Nomefile2[]){
 int CreaContorno (char NomeFile[]) {
     int matrix[DATA_DIM][DATA_DIM];
     BMP_Image im;
-    int a, i, j;    
+    int a, i, j;
     int soglia=15;
 
     a=loadBMP(NomeFile, &im);
     if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
     else{
         memcpy(matrix, im.data, sizeof(Pixel [DATA_DIM][DATA_DIM]));
-        
+
         // settiamo a -1 tutto quello che è all’esterno del contorno
         for(i=0;i<DATA_DIM;i++){
 		    j=0;
-		    while(matrix[i][j]<soglia){    
+		    while(matrix[i][j]<soglia){
 				matrix[i][j]=-1;
 		    	j++;}}
         for(i=0;i<DATA_DIM;i++){
@@ -147,7 +147,7 @@ int CreaContorno (char NomeFile[]) {
             while(matrix[i][j]<soglia){
                 j--;
                 matrix[i][j]=-1;}}
-    
+
         //il contorno esterno a -1 viene annerito. tutto il resto diventa bianco.
         for(i=0;i<DATA_DIM;i++){
             for(i=0;j<DATA_DIM;j++){
@@ -165,12 +165,12 @@ int CreaContorno (char NomeFile[]) {
 int SchermataConfronto(struct s_paziente* t){
 	int choice,a,b,c,d;
 	char Nome[25];
-	struct s_paziente* p; 
+	struct s_paziente* p;
 	struct s_reperto* r1;
 	struct s_reperto* r2;
 	CP(t, &p);
-	a=CercaRepertoConStampa(p, &r1); 
-	
+	a=CercaRepertoConStampa(p, &r1);
+
 	if (!a) return 0;
 
 	printf("Come si desidera procedere?\n");
@@ -181,17 +181,17 @@ int SchermataConfronto(struct s_paziente* t){
 	scanf("%d", &choice);
 
 	switch (choice) {
-		case 1: 
+		case 1:
 	printf("\nScrivere il nome del reperto da confrontare");
 	scanf("%s",Nome);
-	Confronta(r1->NomeDelFile, Nome); 
+	Confronta(r1->NomeDelFile, Nome);
 		break;
-		case 2:    
-	b=CercaRepertoConStampa(p, &r2);  
-	Confronta(r1->NomeDelFile, r2->NomeDelFile);     
+		case 2:
+	b=CercaRepertoConStampa(p, &r2);
+	Confronta(r1->NomeDelFile, r2->NomeDelFile);
 		break;
 		case 3:
-	c=CercaStessoLivello(t, r1,Nome);    
+	c=CercaStessoLivello(t, r1,Nome);
 	Confronta (r1->NomeDelFile, Nome);
 		break;
 		case 4:
@@ -211,21 +211,21 @@ int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	char nomecercato[25];
 	scorriR=p->PAPR;
 
-	while(scorriR==NULL){           
+	while(scorriR==NULL){
 		if( (r1->livello==(scorriR->livello)+1)   &&   (r1->piano==scorriR->piano)  ){
-			printf("%s\t%d\t%c", scorriR->NomeDelFile, scorriR->livello, scorriR->piano); 
-			printf("\n"); 
+			printf("%s\t%d\t%c", scorriR->NomeDelFile, scorriR->livello, scorriR->piano);
+			printf("\n");
 			scorriR=scorriR->next;}
 	}
 
 	printf("quale reperto si desidera analizzare?");
 	scanf("%s", nomecercato);
 
-	ok=trovato(p->PAPR, nomecercato);                   
+	ok=trovato(p->PAPR, nomecercato);
 	if(ok) {
-		strcpy(Nome ,nomecercato); 
+		strcpy(Nome ,nomecercato);
 		return 1;
-	} 
+	}
 	else {printf("il seguente reperto non esiste in questo paziente"); return 0;}
 }
 
@@ -235,13 +235,13 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	struct s_paziente* scorriP;
 	struct s_reperto* scorriR;
 	char nomecercato [25];
-	
+
 	scorriP=p;
 	scorriR=p->PAPR;
 
 	while (scorriP==NULL){
-		while(scorriR==NULL){ 
-			if (scorriR->livello==r1->livello && scorriR->piano==r1->piano)     
+		while(scorriR==NULL){
+			if (scorriR->livello==r1->livello && scorriR->piano==r1->piano)
 			printf("%s\n", scorriR->NomeDelFile);
 			scorriR=scorriR->next;}
 		scorriP=scorriP->next;
@@ -252,8 +252,8 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 
 	scorriP=p;
 	while(!(scorriP->next==NULL)){
-		if(trovato(scorriP->PAPR, nomecercato)){ 
-			strcpy(Nome, nomecercato); 
+		if(trovato(scorriP->PAPR, nomecercato)){
+			strcpy(Nome, nomecercato);
 			return 1;}
 		scorriP=scorriP->next;}
 	return 0;
@@ -261,58 +261,71 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 
 //-----------------
 /*
-int LivelliGrigio(char NomeFile[]){
+int LivelliGrigio(char NomeFile[], int livelli[DATA_DIM]){ //in schermata elaborazione va definito un array da passere alternativamente a LivelloGrigio o GreyDistribution
 
 	BMP_Image im;
 	int a,i,j,k,ok;
 	int t=1;
-	int livelli[256] = {-1};
+    livelli[]={-1};
 
-	a=loadBMP(NomeFile, &im); 
-	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
+	a=loadBMP(NomeFile, &im);
+	if (a) {
+        printf("impossibile aprire l’immagine (vedi sopra)");
+        return 0;
+    }
 
-	for(i=0;i<DATA_DIM;i++){
-		for(j=0;j<DATA_DIM;j++){
-			ok=1;
-			for(k=0;k<t;k++) {
-				if(livelli[k]==im.data[i][j].grey){
-					ok=0;
-					break;}
+	else {
+        for(i=0;i<DATA_DIM;i++){
+            for(j=0;j<DATA_DIM;j++){
+                ok=1;
+                for(k=0;k<t;k++) {
+                    if(livelli[k]==im.data[i][j].grey){
+                        ok=0;
+                        break;}
 			}
 	if(ok){
 		livelli[t-1]=im.data[i][j].grey;
 		t++;}}}
-	
-	for(k=0;k<t;k++){
-		printf("%d\n",livelli[k]);}
+    printf ("I livelli di grigio sono %d\n", t-1);
 
-	return t-1;                    
+	for(k=0;k<t;k++){
+		printf("%d\n",livelli[k]);
+    }
+
+	return t-1;
 
     else{
-        printf("L'immagine non è stata aperta correttamente\n");  
+        printf("L'immagine non è stata aperta correttamente\n");
         return -1;}
 }
 
 
 
-void GreyDistribution (char NomeFile[], int* array, int NUMMAX, int count[]){
+void GreyDistribution (char NomeFile[], int* array, int count[]){
+
+    int NUMMAX;
 
 	BMP_Image im;
 	int a,j,x,i;
 	a = loadBMP(NomeFile, &im);
 
-	if (a==0){
-	for(i=0; i<=NUMMAX; i++)
-	for (j=0; j<DATA_DIM; j++){
-	for(x=0; x<DATA_DIM; x++)
-	if(  array[i] == im.data[j][x].grey  )
-	count[i]++;
-	printf("la sfumatura di grigio %d ricorre %d volte nell’immagine", array[i], count[i]);
-	}
+	NUMMAX=LivelliGrigio(NomeFile, array);
+
+	if (NUMMAX==-1){printf("*ERRORE* durante elaborazione occorrenze");}
+
+	else {
+        if (a==0){
+            for(i=0; i<=NUMMAX; i++)
+                for (j=0; j<DATA_DIM; j++){
+                    for(x=0; x<DATA_DIM; x++)
+                        if(  array[i] == im.data[j][x].grey  )
+                            count[i]++;
+                    printf("la sfumatura di grigio %d ricorre %d volte nell’immagine", array[i], count[i]);
+            }
 
 	}
-
-	else printf ("Immagine non caricata correttamente");
+        else printf ("Immagine non caricata correttamente");
+    }
 }
 */
 
@@ -321,7 +334,7 @@ void SchermataElaborazione(struct s_paziente* t){
 
 	int OK,a,b;
 	float area1, area2;
-	struct s_reperto* reperto;                
+	struct s_reperto* reperto;
 	struct s_paziente * pazientedaesaminare;
 
 	printf("***schermata elaborazione immagine***\n");
@@ -341,7 +354,7 @@ void SchermataElaborazione(struct s_paziente* t){
 		return;
 	else {printf("schermata confronto chiusa senza successo"); return;}
 	}
-	
+
 	CP(t,&pazientedaesaminare);
 	b=CercaRepertoConStampa(pazientedaesaminare,&reperto);
 
@@ -350,7 +363,7 @@ void SchermataElaborazione(struct s_paziente* t){
 			/*b= LivelliGrigio(reperto->NomeDelFile);*/
 		break;
 		case 2:
-			/*GreyDistribution(reperto->NomeDelFile, array, NUMMAX, count[]);*/ 
+			/*GreyDistribution(reperto->NomeDelFile, array, NUMMAX, count[]);*/
 		case 3:
 			b=livelli(reperto->NomeDelFile);
 		break;
