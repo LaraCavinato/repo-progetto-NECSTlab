@@ -259,8 +259,8 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 	return 0;
 }
 
-//-----------------
-/*
+
+
 int LivelliGrigio(char NomeFile[], int livelli[DATA_DIM]){ //in schermata elaborazione va definito un array da passere alternativamente a LivelloGrigio o GreyDistribution
 
 	BMP_Image im;
@@ -283,16 +283,16 @@ int LivelliGrigio(char NomeFile[], int livelli[DATA_DIM]){ //in schermata elabor
                         ok=0;
                         break;}
 			}
-	if(ok){
-		livelli[t-1]=im.data[i][j].grey;
-		t++;}}}
-    printf ("I livelli di grigio sono %d\n", t-1);
+			if(ok){
+				livelli[t-1]=im.data[i][j].grey;
+				t++;}}}
+    	printf ("I livelli di grigio sono %d\n", t-1);
 
-	for(k=0;k<t;k++){
-		printf("%d\n",livelli[k]);
-    }
+		for(k=0;k<t;k++){
+			printf("%d\n",livelli[k]);
+    	}
 
-	return t-1;
+		return t-1;
 
     else{
         printf("L'immagine non è stata aperta correttamente\n");
@@ -311,10 +311,9 @@ void GreyDistribution (char NomeFile[], int* array, int count[]){
 
 	NUMMAX=LivelliGrigio(NomeFile, array);
 
-	if (NUMMAX==-1){printf("*ERRORE* durante elaborazione occorrenze");}
-
-	else {
-        if (a==0){
+	if (NUMMAX==-1){printf("*ERRORE* durante elaborazione occorrenze"); return;}
+	
+	if (a==0){
             for(i=0; i<=NUMMAX; i++)
                 for (j=0; j<DATA_DIM; j++){
                     for(x=0; x<DATA_DIM; x++)
@@ -323,11 +322,9 @@ void GreyDistribution (char NomeFile[], int* array, int count[]){
                     printf("la sfumatura di grigio %d ricorre %d volte nell’immagine", array[i], count[i]);
             }
 
-	}
-        else printf ("Immagine non caricata correttamente");
-    }
+	}else printf ("Immagine non caricata correttamente");
 }
-*/
+
 
 
 void SchermataElaborazione(struct s_paziente* t){
@@ -336,7 +333,7 @@ void SchermataElaborazione(struct s_paziente* t){
 	float area1, area2;
 	struct s_reperto* reperto;
 	struct s_paziente * pazientedaesaminare;
-
+	int livelli[DATA_DIM]={-1};
 	printf("***schermata elaborazione immagine***\n");
 	printf("Si scelga una tra le seguenti opzioni:\n");
 	printf("1. calcolare il numero di livelli di grigio\n");
@@ -360,10 +357,10 @@ void SchermataElaborazione(struct s_paziente* t){
 
 	switch(OK){
 		case 1:
-			/*b= LivelliGrigio(reperto->NomeDelFile);*/
+			b=LivelliGrigio(NomeFile[], livelli[]);
 		break;
 		case 2:
-			/*GreyDistribution(reperto->NomeDelFile, array, NUMMAX, count[]);*/
+			GreyDistribution (reperto->NomeDelFile[]);
 		case 3:
 			b=livelli(reperto->NomeDelFile);
 		break;
