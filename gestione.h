@@ -22,7 +22,9 @@ void crea_reperto (struct s_reperto**);
 void AR(struct s_paziente*);
 int CercaRepertoConStampa(struct s_paziente*, struct s_reperto**);
 
-void importa(struct s_paziente*);
+void importa(struct s_paziente**);
 void esporta(struct s_paziente*);
-void scriviR(struct s_reperto**, FILE*, struct s_reperto*);
-void scriviP(struct s_paziente**, FILE*, struct s_paziente*);
+void scriviR(struct s_reperto**, FILE*, struct s_reperto**);
+void scriviP(struct s_paziente**, FILE*, struct s_paziente***);
+
+

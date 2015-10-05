@@ -5,10 +5,13 @@ void main () {
 	short int lepre;
 	char continuare;					
 	struct s_paziente* pazientedaesaminare;
+	pazientedaesaminare=NULL;
     struct s_paziente* TESTA;
-    importa(TESTA);
+    TESTA=NULL;
+    importa(&TESTA);
+    if(TESTA==NULL) printf("CAZZO");
     do{
-		printf("***BENVENUTI A RAPTURE*** \nnow would you kindly....\n");    
+		printf("\n***BENVENUTI A RAPTURE*** \nnow would you kindly....\n");    
 		printf("1. Aggiungi paziente\n");
 		printf("2. Aggiungi reperto\n");
 		printf("3. Ricerca paziente a cui appartiene una data immagine\n");
@@ -25,7 +28,7 @@ void main () {
 	  default: SchermataElaborazione(TESTA);
 		break;
 		}
-		printf("si desidera continuare? [Y/n]\n");
+		printf("\n  si desidera continuare? [Y/n]\n");
 		scanf(" %c", &continuare);	
 	}while(continuare=='Y');
 	esporta(TESTA);

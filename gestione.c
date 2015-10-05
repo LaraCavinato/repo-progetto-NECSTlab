@@ -9,37 +9,37 @@
 #include "tipiestrutture.h"
 
 //associa il paziente all'immagine fornita
-void match(struct s_paziente* p0) {
+void match(struct s_paziente* t) {
  
     char nomecercato[25];
     struct s_paziente* scorriP;
  
-    scorriP=p0;
+    scorriP=t;
  
     printf("Nome reperto da cercare:");
     scanf("%s", nomecercato);
- 
-    while( !( trovato(scorriP->PAPR, nomecercato) || (scorriP==NULL) ) ){
-        scorriP=scorriP->next;
+    while(!(scorriP==NULL)){
+		if(trovato(scorriP->PAPR, nomecercato)){
+        	printf("Il reperto cercato appartiene al paziente %s %s\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome);
+        	return;
+        }
+		else
+        	scorriP=scorriP->next;
     }
- 
-    if(scorriP->next==NULL)
-        printf("**ERROR** %s non appartiene a nessun paziente", nomecercato);
-    else
-        printf("Il reperto cercato appartiene al paziente %s %s\n", scorriP->anagrafica.nome,  scorriP->anagrafica.cognome);
+	printf("**ERROR** %s non appartiene a nessun paziente\n", nomecercato);        
 }
  
 int trovato (struct s_reperto* scorriR, char nomecercato[]) {
 	//fornito un puntatore a reperto(il primo di una catena) e una stringa restituisce 1 se esiste un reperto con il nome uguale a quello fornito nella stringa nella catena altrimenti 0
-	do{
-		if( !(strcmp(nomecercato, scorriR->NomeDelFile)) )
-			return 1;
-		else
-			scorriR = scorriR->next;
-	}while( !(scorriR->next==NULL));
+		while(!(scorriR==NULL)){
+			if( !(strcmp(nomecercato, scorriR->NomeDelFile)) )
+				return 1;
+			else
+				scorriR = scorriR->next;
+		}
+		return 0;
+}	
 
-	return 0;
-}
 
 //INSERISCI ANAGRARFICA
 void IA(struct s_paziente **a ){
@@ -57,6 +57,7 @@ void crea (struct s_paziente **dato){
  
   *dato = (struct s_paziente*) malloc(sizeof(struct s_paziente));
   (*dato)->next = NULL;
+  (*dato)->PAPR = NULL;
   IA(dato);
 }
  
@@ -76,7 +77,7 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
     struct s_reperto* scorriR;
     char nomecercato[25];
     
-    if(p->PAPR==NULL) {printf("non ci sono reperti in questo paziente"); return 0;}
+    if(p->PAPR==NULL) {printf("non ci sono reperti in questo paziente\n"); return 0;}
     scorriR=p->PAPR;
     
     while(scorriR==NULL){            //stampa tutti i reperti del paziente
@@ -84,7 +85,7 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
         scorriR=scorriR->next;
      }
     
-    printf("quale reperto si desidera analizzare?");
+    printf("quale reperto si desidera analizzare?\n");
     scanf("%s", nomecercato);
     
     ok=trovato(p->PAPR, nomecercato);                    
@@ -97,7 +98,7 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
         *r=scorriR;
         return 1;
     }    
-    else {printf("reperto non trovato"); return 0;}
+    else {printf("reperto non trovato\n"); return 0;}
 } 
 
 //cercapaziente
@@ -127,11 +128,11 @@ void CP (struct s_paziente* t /*testa*/, struct s_paziente** p /*puntatore che p
     }
  
     if(a){   //il paziente è stato trovato
-        printf("Il paziente cercato è stato trovato");
+        printf("Il paziente cercato è stato trovato\n");
         *p=lampo;
     }
 }
- 
+
 void caratteristiche_reperto (struct s_reperto* a){
  
     //chiedere il nome del file da inserire
@@ -149,6 +150,10 @@ void caratteristiche_reperto (struct s_reperto* a){
     scanf("%hi", &a->data.minuto);
     printf("\n secondo:\n");
     scanf("%hi", &a->data.secondo);
+    printf("\n livello:\n");
+    scanf("%d", &a->livello);
+    printf("\n piano:\n");
+    scanf(" %c", &a->piano);
 }
  
 void crea_reperto (struct s_reperto** r){
@@ -191,62 +196,76 @@ void esporta(struct s_paziente* t) {
 	fp=fopen("memoria.txt", "w+");
 	if(fp!=NULL){
 		printf("il file è stato aperto correttamente (ESPORTA). Attendere...\n");
-
 		while(!(scorriP==NULL)){
- 		
- 		/*printf("***inizio printf***");
-		printf("%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
-		printf("***fine printf***"); IGNORE. USED FOR DEBUG PURPOSES. */
-		
-			fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
-			scorriP=scorriP->next;
-
+	 		
+	 		fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
+			
+			//if(scorriP==NULL) return; 
+			
+			scorriR=scorriP->PAPR;
+			
 			while(!(scorriR==NULL)){
-				fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo);
 
-				scorriR=scorriR->next;}
+			fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo, scorriR->livello, scorriR->piano);
+				scorriR=scorriR->next;
+			}
+			scorriP=scorriP->next;
 		}
 	}
 	else{
 		printf("apertura fallita\n");
 		fclose(fp);
 		return;}
+			printf("fine\n");
 	fclose(fp);
 }
 
-void scriviP(struct s_paziente** dato, FILE* fp, struct s_paziente* t){
-	 
+void scriviP(struct s_paziente** dato, FILE* fp, struct s_paziente*** t){
+
 	*dato = (struct s_paziente*) malloc(sizeof(struct s_paziente));
-	  
-	fscanf(fp, "%s\n%s\n%s\n%d\n%hi\n", (*dato)->anagrafica.nome, (*dato)->anagrafica.cognome,(*dato)->anagrafica.codice_fiscale, &((*dato)->anagrafica.ID_medico_di_base), &((*dato)->Numero_Radiografie));
+	(*dato)->PAPR=NULL;
+	fscanf(fp, "%s\n%s\n%s\n%d\n%hi\n", (*dato)->anagrafica.nome, (*dato)->anagrafica.cognome,(*dato)->anagrafica.codice_fiscale, &((*dato)->anagrafica.ID_medico_di_base), &((*dato)->Numero_Radiografie) );
+	/*
+	printf("%s\n%s\n%s\n%d\n%hi\n",(*dato)->anagrafica.nome, (*dato)->anagrafica.cognome,(*dato)->anagrafica.codice_fiscale, (*dato)->anagrafica.ID_medico_di_base, (*dato)->Numero_Radiografie);
+	*/
+	(*dato)->next=**t;
+	**t=*dato;
+}
 
 
-	(*dato)->next=t;
-	t=*dato;}
 
-void scriviR(struct s_reperto** dato, FILE* fp, struct s_reperto* t){
+void scriviR(struct s_reperto** dato, FILE* fp, struct s_reperto** t){
+
 	*dato=(struct s_reperto*)malloc(sizeof(struct s_reperto));
+	fscanf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", (*dato)->NomeDelFile, &((*dato)->data.giorno), &((*dato)->data.mese), &((*dato)->data.anno), &((*dato)->data.ora), &((*dato)->data.minuto), &((*dato)->data.secondo), &((*dato)->livello), &((*dato)->piano) );
+	/*
+	printf("%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", (*dato)->NomeDelFile, ((*dato)->data.giorno), ((*dato)->data.mese), ((*dato)->data.anno), ((*dato)->data.ora), ((*dato)->data.minuto), ((*dato)->data.secondo), ((*dato)->livello), ((*dato)->piano) );
+	*/
+	(*dato)->next=*t;
+	*t=*dato;
+}
 
-	fscanf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n", (*dato)->NomeDelFile, &((*dato)->data.giorno), &((*dato)->data.mese), &((*dato)->data.anno), &((*dato)->data.ora), &((*dato)->data.minuto), &((*dato)->data.secondo));
 
-	(*dato)->next=t;
-	t=*dato;}
 
-void importa(struct s_paziente* t){
+void importa(struct s_paziente** t){
     
 	FILE* fp;
 	struct s_paziente* scorriP;
 	struct s_reperto* scorriR;
+	scorriP=NULL;
+	scorriR=NULL;
 
-	fp=fopen("memoria.txt", "r");
-		if(fp!=NULL) {
+	
+	fp=fopen("memoria.txt", "r+");
+	if(fp!=NULL) {
 	printf("Il file è stato aperto correttamente(IMPORTA)\n");
 
 	while(!feof(fp)){
-		scriviP(&scorriP, fp, t);
-
-		while((scorriP->Numero_Radiografie)--){
-			scriviR(&scorriR, fp, scorriP->PAPR);
+		
+		scriviP(&scorriP, fp, &t);
+		while(scorriP->Numero_Radiografie){
+			scorriP->Numero_Radiografie--;
+			scriviR(&scorriR, fp, &(scorriP->PAPR));
 		}
 	}
 	
@@ -255,4 +274,6 @@ void importa(struct s_paziente* t){
 		fclose(fp);}
 	fclose(fp);
 }
+
+
 

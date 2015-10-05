@@ -1,7 +1,7 @@
 #include"gestione.h"
 #include"bmp.h"
 
-int livelli(char NomeFile[]){
+int Livelli(char NomeFile[]){
 
 	BMP_Image img, risultato;
 	Pixel livelli[10] = {0, 25, 50, 75, 100, 125, 150, 175, 200, 225};
@@ -126,39 +126,48 @@ void Confronta(char Nomefile1[], char Nomefile2[]){
 
 
 int CreaContorno (char NomeFile[]) {
-    int matrix[DATA_DIM][DATA_DIM];
-    BMP_Image im;
     int a, i, j;
-    int soglia=15;
-
-    a=loadBMP(NomeFile, &im);
+	BMP_Image im;
+	int soglia =150;
+	
+	a = loadBMP(NomeFile, &im);
+	
     if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
-    else{
-        memcpy(matrix, im.data, sizeof(Pixel [DATA_DIM][DATA_DIM]));
-
-        // settiamo a -1 tutto quello che è all’esterno del contorno
-        for(i=0;i<DATA_DIM;i++){
-		    j=0;
-		    while(matrix[i][j]<soglia){
-				matrix[i][j]=-1;
-		    	j++;}}
-        for(i=0;i<DATA_DIM;i++){
-            j =255;
-            while(matrix[i][j]<soglia){
-                j--;
-                matrix[i][j]=-1;}}
-
-        //il contorno esterno a -1 viene annerito. tutto il resto diventa bianco.
-        for(i=0;i<DATA_DIM;i++){
-            for(i=0;j<DATA_DIM;j++){
-                if (matrix[i][j]!=-1) matrix[i][j]=255;
-                else matrix[i][j]=0;}}
-
-        memcpy(im.data, matrix, sizeof(Pixel[DATA_DIM][DATA_DIM]));
-        saveBMP(im, "./modificate/contorno.bmp");
-    	return 1;
+   
+	for(i=0;i<DATA_DIM;i++){
+		j=0;
+		while(im.data[i][j].grey<soglia && j<128){
+			im.data[i][j].grey=0;
+			j++;}
+		im.data[i][j].grey=170;
 	}
-}
+	for(i=0;i<DATA_DIM;i++){
+		j =255;
+		while(im.data[i][j].grey<soglia && j>127){
+		   im.data[i][j].grey=0;
+		    j--;}
+		im.data[i][j].grey=170;
+	}
+	
+	for(j=0;j<DATA_DIM;j++){
+		i=0;
+		while(im.data[i][j].grey<soglia && j<128){
+			im.data[i][j].grey=0;
+			i++;}
+		im.data[i][j].grey=170;
+	}
+	for(j=0;j<DATA_DIM;j++){
+		i=255;
+		while(im.data[i][j].grey<soglia && j>127){
+		   im.data[i][j].grey=0;
+		    i--;}
+		im.data[i][j].grey=170;
+	}
+	printf("suka");
+	saveBMP(im, "./modificate/contorno.bmp");
+	printf("sukaprrr");
+	return 1;
+}	
 
 
 
@@ -260,69 +269,62 @@ int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 }
 
 
-
-int LivelliGrigio(char NomeFile[], int livelli[DATA_DIM]){ //in schermata elaborazione va definito un array da passere alternativamente a LivelloGrigio o GreyDistribution
+int LivelliGrigio(char NomeFile[], int livelli[]){ 
+//in schermata elaborazione va definito un array da passere a LivelliGrigio
 
 	BMP_Image im;
 	int a,i,j,k,ok;
-	int t=1;
-    livelli[]={-1};
+	int t=0;
 
 	a=loadBMP(NomeFile, &im);
 	if (a) {
-        printf("impossibile aprire l’immagine (vedi sopra)");
-        return 0;
-    }
-
-	else {
-        for(i=0;i<DATA_DIM;i++){
-            for(j=0;j<DATA_DIM;j++){
-                ok=1;
-                for(k=0;k<t;k++) {
-                    if(livelli[k]==im.data[i][j].grey){
-                        ok=0;
-                        break;}
+		printf("impossibile aprire l’immagine (vedi sopra)\n");
+		return -1;
+	}
+	for(i=0;i<DATA_DIM;i++){
+		for(j=0;j<DATA_DIM;j++){
+			ok=0;
+			for(k=0;k<=t;k++){
+			
+				if(livelli[k]==im.data[i][j].grey){
+					ok=1;
+					break;}
 			}
-			if(ok){
-				livelli[t-1]=im.data[i][j].grey;
-				t++;}}}
-    	printf ("I livelli di grigio sono %d\n", t-1);
+			if(!ok){
+				livelli[t]=im.data[i][j].grey;
+					t++;}
+		}
+	}
+	printf("I livelli di grigio sono %d\n:", t);
 
-		for(k=0;k<t;k++){
-			printf("%d\n",livelli[k]);
-    	}
+	return t;
 
-		return t-1;
-
-    else{
-        printf("L'immagine non è stata aperta correttamente\n");
-        return -1;}
 }
 
 
 
-void GreyDistribution (char NomeFile[], int* array, int count[]){
-
+void GreyDistribution (char NomeFile[]){
+	
+	int count[DATA_DIM];
     int NUMMAX;
-
+	int livelli[DATA_DIM]={-1};
 	BMP_Image im;
 	int a,j,x,i;
 	a = loadBMP(NomeFile, &im);
 
-	NUMMAX=LivelliGrigio(NomeFile, array);
+	NUMMAX=LivelliGrigio(NomeFile, livelli);
 
-	if (NUMMAX==-1){printf("*ERRORE* durante elaborazione occorrenze"); return;}
-	
-	if (a==0){
+	if(NUMMAX==-1) {printf("*ERRORE* durante elaborazione occorrenze"); return;}
+
+        if (a==0){
             for(i=0; i<=NUMMAX; i++)
-                for (j=0; j<DATA_DIM; j++){
+                for (j=0; j<DATA_DIM; j++)
                     for(x=0; x<DATA_DIM; x++)
-                        if(  array[i] == im.data[j][x].grey  )
+                        if(  livelli[i] == im.data[j][x].grey  )
                             count[i]++;
-                    printf("la sfumatura di grigio %d ricorre %d volte nell’immagine", array[i], count[i]);
-            }
-
-	}else printf ("Immagine non caricata correttamente");
+			for(i=0; i<=NUMMAX; i++)
+				printf("la sfumatura di grigio %d ricorre %d volte nell’immagine\n", livelli[i], count[i]);
+		}else printf("Immagine non caricata correttamente");
 }
 
 
@@ -334,6 +336,7 @@ void SchermataElaborazione(struct s_paziente* t){
 	struct s_reperto* reperto;
 	struct s_paziente * pazientedaesaminare;
 	int livelli[DATA_DIM]={-1};
+	
 	printf("***schermata elaborazione immagine***\n");
 	printf("Si scelga una tra le seguenti opzioni:\n");
 	printf("1. calcolare il numero di livelli di grigio\n");
@@ -345,37 +348,42 @@ void SchermataElaborazione(struct s_paziente* t){
 	printf("7. confrontare due immagini\n");
 	scanf("%d",&OK);
 
-	if(OK==7){
-		a=SchermataConfronto(t);
-	if(a)
-		return;
-	else {printf("schermata confronto chiusa senza successo"); return;}
-	}
+	if(OK>=8 || OK<=0) {printf("Si inserisca un numero valido"); return;}
+	else{
+	
+		if(OK==7){
+			a=SchermataConfronto(t);
+			if(a) return;
+			else {printf("Schermata confronto chiusa senza successo"); return;}
+		}
+	
+		else{
+			CP(t,&pazientedaesaminare);
+			b=CercaRepertoConStampa(pazientedaesaminare,&reperto);
 
-	CP(t,&pazientedaesaminare);
-	b=CercaRepertoConStampa(pazientedaesaminare,&reperto);
-
-	switch(OK){
-		case 1:
-			b=LivelliGrigio(NomeFile[], livelli[]);
-		break;
-		case 2:
-			GreyDistribution (reperto->NomeDelFile[]);
-		case 3:
-			b=livelli(reperto->NomeDelFile);
-		break;
-		case 4:
-			b=CreaContorno(reperto->NomeDelFile) ;
-		break;
-		case 5:
-			b= Area(reperto->NomeDelFile);
-		break;
-		case 6:
-			b=ChiaroScuro(reperto->NomeDelFile,&area1,&area2);
-		break;
-		default:
-			printf("Si inserisca un numero valido\n");
-		break;
+			switch(OK){
+				case 1:
+					b=LivelliGrigio(reperto->NomeDelFile, livelli);
+					break;
+				case 2:
+					GreyDistribution (reperto->NomeDelFile);
+					break;
+				case 3:
+					b=Livelli(reperto->NomeDelFile);
+					break;
+				case 4:
+					b=CreaContorno(reperto->NomeDelFile) ;
+					break;
+				case 5:
+					b= Area(reperto->NomeDelFile);
+					break;
+				default:
+					b=ChiaroScuro(reperto->NomeDelFile,&area1,&area2);
+					break;
+			}
+		}
 	}
 }
+
+
 
