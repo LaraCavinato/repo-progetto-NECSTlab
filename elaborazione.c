@@ -117,47 +117,69 @@ void Confronta(char Nomefile1[], char Nomefile2[]){
 
 
 int CreaContorno (char NomeFile[]) {
-    int a, i, j;
+
+	int a, i, j;
 	BMP_Image im;
-	int soglia =150;
-	
-	a = loadBMP(NomeFile, &im);
-	
+
+	int soglia =50;
+
+	a = loadBMP(NomeDelFile, &im);
     if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
-   
+
+	for(i=0;i<DATA_DIM;i++){
+		for(j=0;j<DATA_DIM;j++){
+			if(im.data[i][j].grey==0) im.data[i][j].grey=1;
+		}		
+	}
+
+
 	for(i=0;i<DATA_DIM;i++){
 		j=0;
-		while(im.data[i][j].grey<soglia && j<128){
+		while(im.data[i][j].grey<soglia && j<254){
 			im.data[i][j].grey=0;
 			j++;}
-		im.data[i][j].grey=100;
+		im.data[i][j].grey=255;
 	}
-	for(i=0;i<DATA_DIM;i++){
-		j =255;
-		while(im.data[i][j].grey<soglia && j>127){
-		   im.data[i][j].grey=0;
-		    j--;}
-		im.data[i][j].grey=100;
-	}
+
 	
+
 	for(j=0;j<DATA_DIM;j++){
 		i=0;
-		while(im.data[i][j].grey<soglia && j<128){
+		while(im.data[i][j].grey<soglia && i<254){
 			im.data[i][j].grey=0;
 			i++;}
-		im.data[i][j].grey=100;
+		im.data[i][j].grey=255;
 	}
+
+
+	for(i=0;i<DATA_DIM;i++){
+		j =255;
+		while(im.data[i][j].grey<soglia && j>0){
+			im.data[i][j].grey=0;
+		    j--;}
+		im.data[i][j].grey=255;
+	}
+
+
+
 	for(j=0;j<DATA_DIM;j++){
 		i=255;
-		while(im.data[i][j].grey<soglia && j>127){
-		   im.data[i][j].grey=0;
+		while(im.data[i][j].grey<soglia && i>0){
+		  im.data[i][j].grey=0;
 		    i--;}
-		im.data[i][j].grey=100;
+		im.data[i][j].grey=255;
 	}
+	
+	for(i=0;i<DATA_DIM;i++){
+		for(j=0;j<DATA_DIM;j++){
+			if(im.data[i][j].grey!=0) im.data[i][j].grey=255;
+		}		
+	}
+	
 	printf("suka");
 	saveBMP(im, "./modificate/contorno.bmp");
 	printf("sukaprrr");
-	return 1;
+	return 1;	
 }	
 
 
