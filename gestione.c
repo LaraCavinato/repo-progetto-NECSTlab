@@ -68,6 +68,8 @@ void InserisciInTesta(struct s_paziente** t){
  
     crea(&new);
     new->next=*t;
+    if(*t==NULL) printf("*t punta a NULL");
+    if(new->next==NULL) printf("new in next punta a NULL");
     *t = new;
 }
  
@@ -113,24 +115,20 @@ void CP (struct s_paziente* t /*testa*/, struct s_paziente** p /*puntatore che p
     struct s_paziente* lampo;
     char CF[17];
     lampo=t;
-    short int a=1;
+    //short int a=1;
  
     printf("si inserisca il codice fiscale del paziente cercato:\n");
     scanf("%s", CF);
- 
-    while(  strcmp(lampo->anagrafica.codice_fiscale, CF)  && a){
-        if(lampo->next==NULL){
-            printf("Il paziente cercato non é presente nell'archivio\n");
-            *p=NULL;
-            a=0;
-        }
-        lampo=lampo->next;
+    
+    while(!(lampo==NULL)){
+    	if(!(strcmp(lampo->anagrafica.codice_fiscale, CF))){
+    		printf("il paziente è stato trovato\n");
+    		*p=lampo;
+    		return;
+    	}
+    lampo=lampo->next;
     }
- 
-    if(a){   //il paziente è stato trovato
-        printf("Il paziente cercato è stato trovato\n");
-        *p=lampo;
-    }
+    printf("il paziente cercato non è stato trovato\n");
 }
 
 void caratteristiche_reperto (struct s_reperto* a){
@@ -192,20 +190,19 @@ void esporta(struct s_paziente* t) {
 	struct s_paziente* scorriP;
 	scorriP=t;
 	scorriR=t->PAPR;    
-
+	
 	fp=fopen("memoria.txt", "w+");
 	if(fp!=NULL){
 		printf("il file è stato aperto correttamente (ESPORTA). Attendere...\n");
 		while(!(scorriP==NULL)){
-	 		
+	
+	printf("prefprintf P\n");
 	 		fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
+	printf("postfprintf P\n");		
 			
-			//if(scorriP==NULL) return; 
-			
-			scorriR=scorriP->PAPR;
-			
+			scorriR=scorriP->PAPR;	
 			while(!(scorriR==NULL)){
-
+	printf("while R \n");
 			fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo, scorriR->livello, scorriR->piano);
 				scorriR=scorriR->next;
 			}
@@ -263,6 +260,7 @@ void importa(struct s_paziente** t){
 	while(!feof(fp)){
 		
 		scriviP(&scorriP, fp, &t);
+		
 		while(scorriP->Numero_Radiografie){
 			scorriP->Numero_Radiografie--;
 			scriviR(&scorriR, fp, &(scorriP->PAPR));

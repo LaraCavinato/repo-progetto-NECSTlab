@@ -2,7 +2,7 @@
 
 void main () {
 	short int OK;
-	short int lepre;
+	short int a;
 	char continuare;					
 	struct s_paziente* pazientedaesaminare;
 	pazientedaesaminare=NULL;
@@ -16,9 +16,11 @@ void main () {
 		printf("2. Aggiungi reperto\n");
 		printf("3. Ricerca paziente a cui appartiene una data immagine\n");
 		printf("4. Elaborare un’immagine\n");
+		do{
 		printf("Si scelga il numero della funzione desiderata\n");
-		scanf("%hd", &lepre);
-		switch (lepre) {
+		scanf("%hd", &a);
+		}while(a<1 || a>4);
+		switch (a) {
 	  case 1:  InserisciInTesta(&TESTA); 
 	  	break;
 	  case 2:  AR(TESTA);

@@ -10,25 +10,16 @@ int Livelli(char NomeFile[]){
 	a=loadBMP(NomeFile, &img);
 	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
 
-	memcpy(risultato.magic, img.magic, sizeof(unsigned char [2]));
-	risultato.header=img.header;
-	risultato.info=img.info;
-	memcpy(risultato.color_table, img.color_table, sizeof(Pixel [DATA_DIM][DATA_DIM]));
-
-	if(loadBMP(NomeFile, &risultato)){
-		printf("***caricamento immagine non riuscito***");
-		return;}
-
 	for(i=0;i<256;i++){
 		for(j=0;j<256;j++){
 			ok=1;k=9;
 			do{
-				if(img.data[i][j].grey>=livelli[k].grey) {risultato.data[i][j]=livelli[k]; ok=0;}
+				if(img.data[i][j].grey>=livelli[k].grey) {img.data[i][j]=livelli[k]; ok=0;}
 				else k--;
 			}while(ok);
 		}
 	}
-	saveBMP(risultato,"./modificate/livelli.bmp");
+	saveBMP(img,"./modificate/livelli.bmp");
 	return 1;
 }
 
@@ -139,14 +130,14 @@ int CreaContorno (char NomeFile[]) {
 		while(im.data[i][j].grey<soglia && j<128){
 			im.data[i][j].grey=0;
 			j++;}
-		im.data[i][j].grey=170;
+		im.data[i][j].grey=100;
 	}
 	for(i=0;i<DATA_DIM;i++){
 		j =255;
 		while(im.data[i][j].grey<soglia && j>127){
 		   im.data[i][j].grey=0;
 		    j--;}
-		im.data[i][j].grey=170;
+		im.data[i][j].grey=100;
 	}
 	
 	for(j=0;j<DATA_DIM;j++){
@@ -154,14 +145,14 @@ int CreaContorno (char NomeFile[]) {
 		while(im.data[i][j].grey<soglia && j<128){
 			im.data[i][j].grey=0;
 			i++;}
-		im.data[i][j].grey=170;
+		im.data[i][j].grey=100;
 	}
 	for(j=0;j<DATA_DIM;j++){
 		i=255;
 		while(im.data[i][j].grey<soglia && j>127){
 		   im.data[i][j].grey=0;
 		    i--;}
-		im.data[i][j].grey=170;
+		im.data[i][j].grey=100;
 	}
 	printf("suka");
 	saveBMP(im, "./modificate/contorno.bmp");
@@ -177,7 +168,11 @@ int SchermataConfronto(struct s_paziente* t){
 	struct s_paziente* p;
 	struct s_reperto* r1;
 	struct s_reperto* r2;
+	
+	\\shish
 	CP(t, &p);
+	\\shish
+	
 	a=CercaRepertoConStampa(p, &r1);
 
 	if (!a) return 0;
@@ -335,6 +330,7 @@ void SchermataElaborazione(struct s_paziente* t){
 	float area1, area2;
 	struct s_reperto* reperto;
 	struct s_paziente * pazientedaesaminare;
+	pazientedaesaminare=NULL;
 	int livelli[DATA_DIM]={-1};
 	
 	printf("***schermata elaborazione immagine***\n");
@@ -358,7 +354,9 @@ void SchermataElaborazione(struct s_paziente* t){
 		}
 	
 		else{
+			do{
 			CP(t,&pazientedaesaminare);
+			}while(pazientedaesaminare==NULL);
 			b=CercaRepertoConStampa(pazientedaesaminare,&reperto);
 
 			switch(OK){
