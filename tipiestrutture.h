@@ -15,8 +15,8 @@ typedef struct{
 //TIPO ANAGRAFICA
 typedef struct{
  
-	char nome[20];
-	char cognome[20];
+	char nome[50];
+	char cognome[50];
 	char codice_fiscale[17];
 	int ID_medico_di_base;} t_anagrafica;
      

@@ -43,10 +43,9 @@ int trovato (struct s_reperto* scorriR, char nomecercato[]) {
 
 //INSERISCI ANAGRARFICA
 void IA(struct s_paziente **a ){
- 
+	
     printf("inserisci in questo formato nome[spazio]cognome[spazio]codicefiscale:\n\n");
     scanf("%s %s %s", (*a)->anagrafica.nome, (*a)->anagrafica.cognome, (*a)->anagrafica.codice_fiscale);
- 
     printf("inserisci ID medico:");
     scanf("%d", &(*a)->anagrafica.ID_medico_di_base);
  
@@ -68,8 +67,6 @@ void InserisciInTesta(struct s_paziente** t){
  
     crea(&new);
     new->next=*t;
-    if(*t==NULL) printf("*t punta a NULL");
-    if(new->next==NULL) printf("new in next punta a NULL");
     *t = new;
 }
  
@@ -174,6 +171,7 @@ void AR(struct s_paziente * t /*puntatore al primo paziente*/) {
     }while(paziente==NULL);
     // ora paziente punta al paziente desiderato
     
+    printf("--inserimento reperto--\n");
     crea_reperto(&R);
     // ora R ha della memoria allocata e vi sono salvati tutti i dati necessari.
  
@@ -193,24 +191,22 @@ void esporta(struct s_paziente* t) {
 	
 	fp=fopen("memoria.txt", "w+");
 	if(fp!=NULL){
-		printf("il file è stato aperto correttamente (ESPORTA). Attendere...\n");
+		printf("il file è stato aperto correttamente (ESPORTA).\n");
 		while(!(scorriP==NULL)){
 	
-	printf("prefprintf P\n");
-	 		fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);
-	printf("postfprintf P\n");		
+	 		fprintf(fp, "%s\n%s\n%s\n%d\n%hi\n", scorriP->anagrafica.nome, scorriP->anagrafica.cognome, scorriP->anagrafica.codice_fiscale, scorriP->anagrafica.ID_medico_di_base, scorriP->Numero_Radiografie);		
 			
 			scorriR=scorriP->PAPR;	
 			while(!(scorriR==NULL)){
-	printf("while R \n");
-			fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo, scorriR->livello, scorriR->piano);
+			
+				fprintf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", scorriR->NomeDelFile, scorriR->data.giorno, scorriR->data.mese, scorriR->data.anno, scorriR->data.ora, scorriR->data.minuto, scorriR->data.secondo, scorriR->livello, scorriR->piano);
 				scorriR=scorriR->next;
 			}
 			scorriP=scorriP->next;
 		}
 	}
 	else{
-		printf("apertura fallita\n");
+		printf("\n**ERROR** apertura fallita del file memoria \n");
 		fclose(fp);
 		return;}
 			printf("fine\n");
@@ -268,7 +264,7 @@ void importa(struct s_paziente** t){
 	}
 	
 	}else{
-		printf ("apertura fallita");
+		printf("\n**ERROR** apertura fallita del file memoria \n");
 		fclose(fp);}
 	fclose(fp);
 }

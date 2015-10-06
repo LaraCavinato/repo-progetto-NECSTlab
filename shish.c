@@ -9,7 +9,7 @@ void main () {
     struct s_paziente* TESTA;
     TESTA=NULL;
     importa(&TESTA);
-    if(TESTA==NULL) printf("CAZZO");
+    printf("NB: Nel caso il paziente abbia due nomi si prega di inserirli con un underscore tra di essi.\nEsempio Homer_J Simpson HRJSMP30B55C957Y.\n");
     do{
 		printf("\n***BENVENUTI A RAPTURE*** \nnow would you kindly....\n");    
 		printf("1. Aggiungi paziente\n");

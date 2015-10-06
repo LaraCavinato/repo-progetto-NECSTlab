@@ -1,5 +1,6 @@
 #include"gestione.h"
 #include"bmp.h"
+#include<time.h>
 
 int Livelli(char NomeFile[]){
 
@@ -8,7 +9,7 @@ int Livelli(char NomeFile[]){
 	short int ok;
 	int i, j, k, a;
 	a=loadBMP(NomeFile, &img);
-	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
+	if (a) {printf("impossibile aprire l’immagine (vedi sopra)\n"); return 0;}
 
 	for(i=0;i<256;i++){
 		for(j=0;j<256;j++){
@@ -31,26 +32,26 @@ int Area (char NomeFile[]){
 	BMP_Image im;
 	a = CreaContorno(NomeFile);
 	b = loadBMP("./modificate/contorno.bmp", &im);
-	if (b) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
+	if (b) {printf("impossibile aprire l’immagine (vedi sopra)\n"); return 0;}
 	if(a==1){
 		for(i=0;i<DATA_DIM;i++)
 		for(j=0;j<DATA_DIM;j++)
 		if (im.data[i][j].grey==255)
 			count++;
-		printf("L’area dell’immagine significativa è di %d pixel", count);
+		printf("L’area dell’immagine significativa è di %d pixel\n", count);
 		area = count*0.00625;
-		printf("L’area è di %f mm^2", area);
+		printf("L’area è di %f mm^2\n", area);
 		return 1;
 	}
 	else
-		{printf("CreaContorno non è andata a buon fine");
+		{printf("CreaContorno non è andata a buon fine\n");
 		return 0;}
 }
 
 
 
 int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
-
+	
 	BMP_Image im;
 	int th, tl, a, i, j, s=50;
 	int countl=0;
@@ -82,6 +83,7 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 			im.data[i][j].grey=128;
 			i--;}
 	}
+	
 	//facciamo i controlli
 	printf("Inserisci il valore della soglia scura(minore di 128)\n");
 	scanf("%d", &tl);
@@ -135,11 +137,18 @@ int CreaContorno (char NomeDelFile[]) {
 
 	int a, i, j;
 	BMP_Image im;
-
+	char choose;
 	int soglia =50;
-
+	
+	printf("\nSoglia predefinita:%d\nSi desidera modificarla? [Y/n]:", soglia);
+	scanf(" %c", &choose);
+	if(choose=='Y') {
+		printf("si inserisca la soglia:");
+		scanf("%d", &soglia);
+	}
+	
 	a = loadBMP(NomeDelFile, &im);
-    if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
+    if (a) {printf("\nimpossibile aprire l’immagine (vedi sopra)"); return 0;}
 
 	for(i=0;i<DATA_DIM;i++){
 		for(j=0;j<DATA_DIM;j++){
@@ -236,27 +245,20 @@ int SchermataConfronto(struct s_paziente* t){
 	d=CercaSuccessivo(p, r1, Nome);
 	Confronta(r1->NomeDelFile, Nome);
 		break;
-		default: printf("non riconosciuto");
+		default: printf("non riconosciuto\n");
 		break;
 	}
 }
 
 
 
-int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
-
-printf("0");	
+int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){	
 	
 	short int ok;
 	struct s_reperto* scorriR;
 	char nomecercato[25];
-
-printf("1");
 	
 	scorriR=p->PAPR;
-printf("2");
-
-	if(p->PAPR==NULL) printf("   p->papr NULL  ");
 	
 	while(!(scorriR==NULL)){
 		if( (r1->livello==(scorriR->livello)-1)   &&   (r1->piano==scorriR->piano) ){
@@ -274,7 +276,7 @@ printf("2");
 		strcpy(Nome ,nomecercato);
 		return 1;
 	}
-	else {printf("il seguente reperto non esiste in questo paziente"); return 0;}
+	else {printf("il seguente reperto non esiste in questo paziente\n"); return 0;}
 }
 
 
@@ -354,7 +356,7 @@ void GreyDistribution (char NomeFile[]){
 
 	NUMMAX=LivelliGrigio(NomeFile, livelli);
 
-	if(NUMMAX==-1) {printf("*ERRORE* durante elaborazione occorrenze"); return;}
+	if(NUMMAX==-1) {printf("*ERRORE* durante elaborazione occorrenze\n"); return;}
 
         if (a==0){
             for(i=0; i<=NUMMAX; i++)
@@ -364,7 +366,7 @@ void GreyDistribution (char NomeFile[]){
                             count[i]++;
 			for(i=0; i<=NUMMAX; i++)
 				printf("la sfumatura di grigio %d ricorre %d volte nell’immagine\n", livelli[i], count[i]);
-		}else printf("Immagine non caricata correttamente");
+		}else printf("Immagine non caricata correttamente\n");
 }
 
 
@@ -389,13 +391,13 @@ void SchermataElaborazione(struct s_paziente* t){
 	printf("7. confrontare due immagini\n");
 	scanf("%d",&OK);
 
-	if(OK>=8 || OK<=0) {printf("Si inserisca un numero valido"); return;}
+	if(OK>=8 || OK<=0) {printf("Si inserisca un numero valido\n"); return;}
 	else{
 	
 		if(OK==7){
 			a=SchermataConfronto(t);
 			if(a) return;
-			else {printf("Schermata confronto chiusa senza successo"); return;}
+			else {printf("Schermata confronto chiusa senza successo\n"); return;}
 		}
 	
 		else{
