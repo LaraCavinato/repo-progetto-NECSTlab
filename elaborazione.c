@@ -38,7 +38,7 @@ int Area (char NomeFile[]){
 		if (im.data[i][j].grey==255)
 			count++;
 		printf("L’area dell’immagine significativa è di %d pixel", count);
-		area = count*0,00625;
+		area = count*0.00625;
 		printf("L’area è di %f mm^2", area);
 		return 1;
 	}
@@ -52,23 +52,37 @@ int Area (char NomeFile[]){
 int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 
 	BMP_Image im;
-	int th, tl, a, i, j, s=15;
-	int countl=0, counth=0;
-
+	int th, tl, a, i, j, s=50;
+	int countl=0;
+	int  counth=0;
 	a=loadBMP(NomeFile, &im);
 	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
 
 	for(i=0; i<DATA_DIM;i++){
 		j=0;
-		while (im.data[i][j].grey<s || j<256) {
+		while (im.data[i][j].grey<s && j<256) {
 			im.data[i][j].grey=128;
 			j++;}}
 	for(i=0; i<DATA_DIM;i++){
-		j=256;
-		while (im.data[i][j].grey<s || j>-1) {
+		j=255;
+		while (im.data[i][j].grey<s && j>-1) {
 			im.data[i][j].grey=128;
 			j--;}}
-
+			
+	for(j=0;j<DATA_DIM;j++){
+		i=0;
+		while(im.data[i][j].grey<s && i<256){
+			im.data[i][j].grey=128;
+			i++;}
+	}
+		
+	for(j=0;j<DATA_DIM;j++){
+		i=255;
+		while(im.data[i][j].grey<s && i>-1){
+			im.data[i][j].grey=128;
+			i--;}
+	}
+	//facciamo i controlli
 	printf("Inserisci il valore della soglia scura(minore di 128)\n");
 	scanf("%d", &tl);
 	printf("Inserisci il valore della soglia chiara(maggiore di 128)\n");
@@ -89,34 +103,35 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 	*areaC=counth*0.00625;
 	*areaS=countl*0.00625;
 
-	printf("L’area dell’immagine significativa molto chiara è di %d pixel", counth);
-	printf("L’area dell’immagine significativa molto chiara è di %f mm^2", *areaC);
-	printf("L’area dell’immagine significativa molto scura è di %d pixel", countl);
-	printf("L’area dell’immagine significativa molto scura è di %f mm^2", *areaS);
+	printf("\nL’area dell’immagine significativa molto chiara è di %d pixel\n", counth);
+	printf("L’area dell’immagine significativa molto chiara è di %f mm^2\n", *areaC);
+	printf("L’area dell’immagine significativa molto scura è di %d pixel\n", countl);
+	printf("L’area dell’immagine significativa molto scura è di %f mm^2\n", *areaS);
 
 	saveBMP(im, "./modificate/ChiaroScuroBrutto.bmp");
 	return 1;
 }
 
 
-
 void Confronta(char Nomefile1[], char Nomefile2[]){
 
 	float area1C, area1S, area2C, area2S, scartoC, scartoS;
 
-	ChiaroScuro(Nomefile1, &area1C, &area1S);
-	ChiaroScuro(Nomefile2, &area2C, &area2S);
+	printf("--prima immagine--\n");
+	if(!ChiaroScuro(Nomefile1, &area1C, &area1S)) return;
+	printf("--seconda immagine--\n");
+	if(!ChiaroScuro(Nomefile2, &area2C, &area2S)) return;
 
 	scartoC=area1C-area2C;
 	scartoS=area1S-area2S;
 
-	printf("L’area chiara dall’ immagine %s all’immagine %s è cresciuta di: %f\n", Nomefile1, Nomefile2, scartoC);
-	printf("L’area scura  dall’ immagine %s all’immagine %s è cresciuta di: %f\n", Nomefile1, Nomefile2, scartoS);
+	printf("\nL’area chiara dall’ immagine %s all’immagine %s è cresciuta di: %f mm^2\n", Nomefile1, Nomefile2, scartoC);
+	printf("L’area scura  dall’ immagine %s all’immagine %s è cresciuta di: %f mm^2\n", Nomefile1, Nomefile2, scartoS);
 }
 
 
 
-int CreaContorno (char NomeFile[]) {
+int CreaContorno (char NomeDelFile[]) {
 
 	int a, i, j;
 	BMP_Image im;
@@ -176,24 +191,22 @@ int CreaContorno (char NomeFile[]) {
 		}		
 	}
 	
-	printf("suka");
 	saveBMP(im, "./modificate/contorno.bmp");
-	printf("sukaprrr");
 	return 1;	
 }	
 
 
 
 int SchermataConfronto(struct s_paziente* t){
-	int choice,a,b,c,d;
+	int choice, a, b, c, d;
 	char Nome[25];
 	struct s_paziente* p;
 	struct s_reperto* r1;
 	struct s_reperto* r2;
 	
-	\\shish
+	do{
 	CP(t, &p);
-	\\shish
+	}while(p==NULL);
 	
 	a=CercaRepertoConStampa(p, &r1);
 
@@ -201,14 +214,13 @@ int SchermataConfronto(struct s_paziente* t){
 
 	printf("Come si desidera procedere?\n");
 	printf("1. cercare un altro reperto inserendolo manualmente\n");
-	printf("2.cercare un altro reperto appartenente allo stesso paziente\n");
+	printf("2. cercare un altro reperto appartenente allo stesso paziente\n");
 	printf("3. cercare un altro reperto del medesimo livello di quello scelto inizialmente\n");
-	printf("4. cercare un reperto adiacente a quello già in esame dello stesso paziente");
+	printf("4. cercare un reperto adiacente a quello già in esame dello stesso paziente\n");
 	scanf("%d", &choice);
-
 	switch (choice) {
 		case 1:
-	printf("\nScrivere il nome del reperto da confrontare");
+	printf("Scrivere il nome del reperto da confrontare\n");
 	scanf("%s",Nome);
 	Confronta(r1->NomeDelFile, Nome);
 		break;
@@ -218,10 +230,10 @@ int SchermataConfronto(struct s_paziente* t){
 		break;
 		case 3:
 	c=CercaStessoLivello(t, r1,Nome);
-	Confronta (r1->NomeDelFile, Nome);
+	Confronta(r1->NomeDelFile, Nome);
 		break;
 		case 4:
-	d=CercaSuccessivo(t,r1,Nome);
+	d=CercaSuccessivo(p, r1, Nome);
 	Confronta(r1->NomeDelFile, Nome);
 		break;
 		default: printf("non riconosciuto");
@@ -232,16 +244,26 @@ int SchermataConfronto(struct s_paziente* t){
 
 
 int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
+
+printf("0");	
+	
 	short int ok;
 	struct s_reperto* scorriR;
 	char nomecercato[25];
-	scorriR=p->PAPR;
 
-	while(scorriR==NULL){
-		if( (r1->livello==(scorriR->livello)+1)   &&   (r1->piano==scorriR->piano)  ){
+printf("1");
+	
+	scorriR=p->PAPR;
+printf("2");
+
+	if(p->PAPR==NULL) printf("   p->papr NULL  ");
+	
+	while(!(scorriR==NULL)){
+		if( (r1->livello==(scorriR->livello)-1)   &&   (r1->piano==scorriR->piano) ){
 			printf("%s\t%d\t%c", scorriR->NomeDelFile, scorriR->livello, scorriR->piano);
 			printf("\n");
-			scorriR=scorriR->next;}
+			}
+		scorriR=scorriR->next;
 	}
 
 	printf("quale reperto si desidera analizzare?");
@@ -257,26 +279,27 @@ int CercaSuccessivo(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
 
 
 
-int CercaStessoLivello(struct s_paziente* p, struct s_reperto* r1, char Nome[]){
+int CercaStessoLivello(struct s_paziente* t, struct s_reperto* r1, char Nome[]){
 	struct s_paziente* scorriP;
 	struct s_reperto* scorriR;
 	char nomecercato [25];
 
-	scorriP=p;
-	scorriR=p->PAPR;
+	scorriP=t;
 
-	while (scorriP==NULL){
-		while(scorriR==NULL){
+	while (!(scorriP==NULL)){
+		scorriR=scorriP->PAPR;
+		while(!(scorriR==NULL)){
 			if (scorriR->livello==r1->livello && scorriR->piano==r1->piano)
-			printf("%s\n", scorriR->NomeDelFile);
-			scorriR=scorriR->next;}
+					printf("%s\n", scorriR->NomeDelFile);
+			scorriR=scorriR->next;
+			}
 		scorriP=scorriP->next;
 	}
 
 	printf("quale reperto si desidera analizzare?");
 	scanf("%s", nomecercato);
 
-	scorriP=p;
+	scorriP=t;
 	while(!(scorriP->next==NULL)){
 		if(trovato(scorriP->PAPR, nomecercato)){
 			strcpy(Nome, nomecercato);

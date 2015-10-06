@@ -1,0 +1,25 @@
+Pierandrea
+Cancian
+CNCPND94A19C957Y
+6437
+1
+15s.bmp
+23	4	2015
+9	0	8
+10
+s
+Eleonora
+D'arnese
+DRNLNR94M56A326X
+1234
+2
+048s.bmp
+4	5	3
+4	2	3
+10
+s
+049c.bmp
+5	65	2345
+4	5	6
+11
+s

@@ -82,7 +82,7 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
     if(p->PAPR==NULL) {printf("non ci sono reperti in questo paziente\n"); return 0;}
     scorriR=p->PAPR;
     
-    while(scorriR==NULL){            //stampa tutti i reperti del paziente
+    while(!(scorriR==NULL)){            //stampa tutti i reperti del paziente
         printf("%s\n", scorriR->NomeDelFile);
         scorriR=scorriR->next;
      }
@@ -222,9 +222,9 @@ void scriviP(struct s_paziente** dato, FILE* fp, struct s_paziente*** t){
 	*dato = (struct s_paziente*) malloc(sizeof(struct s_paziente));
 	(*dato)->PAPR=NULL;
 	fscanf(fp, "%s\n%s\n%s\n%d\n%hi\n", (*dato)->anagrafica.nome, (*dato)->anagrafica.cognome,(*dato)->anagrafica.codice_fiscale, &((*dato)->anagrafica.ID_medico_di_base), &((*dato)->Numero_Radiografie) );
-	/*
+	
 	printf("%s\n%s\n%s\n%d\n%hi\n",(*dato)->anagrafica.nome, (*dato)->anagrafica.cognome,(*dato)->anagrafica.codice_fiscale, (*dato)->anagrafica.ID_medico_di_base, (*dato)->Numero_Radiografie);
-	*/
+	
 	(*dato)->next=**t;
 	**t=*dato;
 }
@@ -235,9 +235,9 @@ void scriviR(struct s_reperto** dato, FILE* fp, struct s_reperto** t){
 
 	*dato=(struct s_reperto*)malloc(sizeof(struct s_reperto));
 	fscanf(fp, "%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", (*dato)->NomeDelFile, &((*dato)->data.giorno), &((*dato)->data.mese), &((*dato)->data.anno), &((*dato)->data.ora), &((*dato)->data.minuto), &((*dato)->data.secondo), &((*dato)->livello), &((*dato)->piano) );
-	/*
+	
 	printf("%s\n%hi\t%hi\t%hi\n%hi\t%hi\t%hi\n%d\n%c\n", (*dato)->NomeDelFile, ((*dato)->data.giorno), ((*dato)->data.mese), ((*dato)->data.anno), ((*dato)->data.ora), ((*dato)->data.minuto), ((*dato)->data.secondo), ((*dato)->livello), ((*dato)->piano) );
-	*/
+	
 	(*dato)->next=*t;
 	*t=*dato;
 }
@@ -251,6 +251,7 @@ void importa(struct s_paziente** t){
 	struct s_reperto* scorriR;
 	scorriP=NULL;
 	scorriR=NULL;
+	int NR;
 
 	
 	fp=fopen("memoria.txt", "r+");
@@ -260,9 +261,8 @@ void importa(struct s_paziente** t){
 	while(!feof(fp)){
 		
 		scriviP(&scorriP, fp, &t);
-		
-		while(scorriP->Numero_Radiografie){
-			scorriP->Numero_Radiografie--;
+		NR=scorriP->Numero_Radiografie;
+		while(NR--){
 			scriviR(&scorriR, fp, &(scorriP->PAPR));
 		}
 	}
