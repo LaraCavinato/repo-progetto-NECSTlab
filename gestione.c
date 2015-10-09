@@ -71,7 +71,7 @@ void InserisciInTesta(struct s_paziente** t){
 }
  
 int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
-//elenca tutti i reperti del paziente puntato da puntatore fornito. poi chiede un nomereperto e lo cerca. se lo trova lo lo associa al puntatore passato e torna 1, altrimenti 0;
+//elenca tutti i reperti del paziente puntato da puntatore fornito. Poi chiede un nomereperto e lo cerca. Se lo trova lo associa al puntatore passato e torna 1, altrimenti 0;
     short int ok;
     struct s_reperto* scorriR;
     char nomecercato[25];
@@ -100,14 +100,12 @@ int CercaRepertoConStampa(struct s_paziente* p, struct s_reperto** r){
     else {printf("reperto non trovato\n"); return 0;}
 } 
 
-//cercapaziente
+//CERCAPAZIENTE
 void CP (struct s_paziente* t /*testa*/, struct s_paziente** p /*puntatore che punterà*/) {
-//DATI DI TARGA
 //riceve il puntatore alla testa e l'indirizzo di un puntatore che se tutto va a buon fine alla chiusura
 //della funzione punterà al paziente richiesto. Il paziente viene richiesto all'interno della funzione.
-//se il paziente non compare tra i salvati allora verrà stampato a schermo un messaggio d'errore e
-//il puntatore verrà reimposto a NULL per sicurezza. Il chiamante dovrebbe assicurarsi che tutto
-//funzioni alla fine.
+//Se il paziente non compare tra i salvati allora verrà stampato a schermo un messaggio d'errore e
+//il puntatore verrà reimposto a NULL per sicurezza.
  
     struct s_paziente* lampo;
     char CF[17];
@@ -159,7 +157,7 @@ void crea_reperto (struct s_reperto** r){
 }
 
 //AGGIUNGI REPERTO
-void AR(struct s_paziente * t /*puntatore al primo paziente*/) {
+void AR(struct s_paziente * t /*TESTA*/) {
  
     struct s_paziente* paziente;
     paziente=NULL;

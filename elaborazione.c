@@ -57,7 +57,7 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 	int countl=0;
 	int  counth=0;
 	a=loadBMP(NomeFile, &im);
-	if (a) {printf("impossibile aprire l’immagine (vedi sopra)"); return 0;}
+	if (a) {printf("impossibile aprire l’immagine (vedi sopra)\n"); return 0;}
 
 	for(i=0; i<DATA_DIM;i++){
 		j=0;
@@ -84,7 +84,6 @@ int ChiaroScuro(char NomeFile[], float* areaC, float* areaS){
 			i--;}
 	}
 	
-	//facciamo i controlli
 	printf("Inserisci il valore della soglia scura(minore di 128)\n");
 	scanf("%d", &tl);
 	printf("Inserisci il valore della soglia chiara(maggiore di 128)\n");
@@ -148,7 +147,7 @@ int CreaContorno (char NomeDelFile[]) {
 	}
 	
 	a = loadBMP(NomeDelFile, &im);
-    if (a) {printf("\nimpossibile aprire l’immagine (vedi sopra)"); return 0;}
+    if (a) {printf("\nimpossibile aprire l’immagine (vedi sopra)\n"); return 0;}
 
 	for(i=0;i<DATA_DIM;i++){
 		for(j=0;j<DATA_DIM;j++){
@@ -225,7 +224,7 @@ int SchermataConfronto(struct s_paziente* t){
 	printf("1. cercare un altro reperto inserendolo manualmente\n");
 	printf("2. cercare un altro reperto appartenente allo stesso paziente\n");
 	printf("3. cercare un altro reperto del medesimo livello di quello scelto inizialmente\n");
-	printf("4. cercare un reperto adiacente a quello già in esame dello stesso paziente\n");
+	printf("4. cercare un reperto successivo a quello già in esame dello stesso paziente\n");
 	scanf("%d", &choice);
 	switch (choice) {
 		case 1:
@@ -312,7 +311,6 @@ int CercaStessoLivello(struct s_paziente* t, struct s_reperto* r1, char Nome[]){
 
 
 int LivelliGrigio(char NomeFile[], int livelli[]){ 
-//in schermata elaborazione va definito un array da passere a LivelliGrigio
 
 	BMP_Image im;
 	int a,i,j,k,ok;
