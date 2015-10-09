@@ -1,0 +1,81 @@
+Scopo del programma
+
+Il programma ha come obiettivo quello di permettere l'organizzazione e la 
+storicizzazione di pazienti e delle relative immagini tomografiche. 
+
+Struttura del programma
+
+Il programmma si compone di una directory principale contenente le tre 
+librerie, il programma principale,  e una cartella chiamata "modificate" che 
+contiene tutte le immagini elaborate. Tutti i reperti vanno posizionati nella 
+directory principale insieme al codice. 
+
+Eseguire il programma.
+
+per poter essere eseguito il programma deve prima essere compilato. per compilare il programma seguire i seguenti passi:
+- compilare le tre librerie (bmp, gestione e elaborazione) utilizzando i 
+seguenti comandi:
+	gcc bmp.c -c
+	gcc gestione.c -c
+	gcc elaborazione.c -c
+- compilare il codice vero e proprio includendo le tre librerie tramite il
+seguente comando:
+	gcc bmp.o gestione.o elaborazione.o main.c -o exe
+- per eseguire il codice utilizzare:
+	./exe
+
+Utilizzare il programma.
+
+Il menu principale.
+Per aggiungere un paziente all'archivio scegliere la prima opzione: "aggiungi 
+un paziente". Inserire poi i dati anagrafici quando richiesto.
+Per associare un reperto ad un determinato paziente scegliere la seconda 
+opzione: "aggiungi un reperto". Inserire poi i dati relativi al reperto quando 
+richiesti.
+Per risalire al paziente a cui appartiene una data immagine scegliere la terza 
+opzione: "Ricerca paziente a cui appartiene una data immagine". Inserire i 
+dati 
+richiesti.
+Per accedere al menù di elaborazione scegliere la quarta opzione.
+
+Il menù di elaborazione.
+Dal menù di elaborazione è possibile scegliere quale operazione compiere 
+su un'immagine. Il nome dell'immagine viene richiesto subito dopo la scelta 
+dell'operazione
+La prima funzione permette di calcolare le occorrenze dei livelli di girgio 
+all'interno dell'immagine. 
+La seconda funzione permette di calcolare la distribuzione dei livelli di 
+grigio trovati, ovvero quanti pixel dell'immagine figurano ciascuno dei 
+livelli di grigio.
+La terza funzione permette di ridurre i livelli di grigio a 10 arrotondando 
+per difetto il valore di ciascun pixel ad uno dei dieci livelli di grigio 
+prestabiliti.
+La quarta funzione permette di definire il contorno della zona informativa 
+cancellando lo sfondo nero delle immaginni tomografiche. La soglia è 
+predefinita ma modificabile dall'utente. Un immagine in bianco e nero 
+rappresentante il contorno ottenuto verrà creata nella cartella denominata 
+"modificate".
+La quinta funzione permette di calcolare l'area descritta dal contorno 
+informativo.
+La sesta funzione permette di definire due soglie per discriminare due aree di 
+colore, una molto chiara ed una molto scura. Viene poi calcolata l'area di  
+queste due aree all'interno del contorno informativo.
+La settima funzione permette di accedere al menù di confronto tra due immagini.
+
+Il menù di confronto.
+Prima di accedere alle funzioni il programma chiederà all'utente di inserire 
+un primo reperto per il confronto, si potrà poi scegliere il secondo reperto 
+tramite una delle quattro funzioni proposte.
+La prima funzione permette all'utente di ricercare tramite il nome del file il 
+secondo reperto.
+La seconda funzione permette di scegliere un'altra immagine appartenente allo 
+stesso paziente. Il programma elencherà tutte le altre immagini presenti nel 
+paziente in esame.
+La terza funzione permette di trovare tutte le altri immagini presenti 
+nell'archivio e corrispondenti in termini di piano e livello. le immagini che 
+soddisfano il criterio di ricerca verranno elencate.
+La quarta funzione permette di ricercare tutte le immagini, all'interno dello 
+stesso paziente, che siano successive in termini di livello alla prima scelta.
+
+
+
